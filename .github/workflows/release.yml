@@ -28,12 +28,63 @@ jobs:
       - name: Build Windows (Release)
         run: flutter build windows --release
 
-      - name: Package release zip
+      - name: Install NSIS
+        run: choco install nsis --yes --no-progress
+
+      - name: Create NSIS installer
+        shell: pwsh
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart("v")
+          $outDir = "build\windows\x64\runner\Release"
+          $installerName = "MCP_Console_${{ github.ref_name }}_Setup.exe"
+          @"
+          !define APP_NAME "MCP Console"
+          !define APP_VERSION "$version"
+          !define APP_EXE "mcp_console.exe"
+          !define OUT_FILE "$installerName"
+
+          Name "`${APP_NAME} `${APP_VERSION}"
+          OutFile "`${OUT_FILE}"
+          InstallDir "`$PROGRAMFILES64\MCP Console"
+          InstallDirRegKey HKCU "Software\MCP Console" ""
+          RequestExecutionLevel admin
+          SetCompressor /SOLID lzma
+
+          Page directory
+          Page instfiles
+          UninstPage uninstConfirm
+          UninstPage instfiles
+
+          Section "Install"
+            SetOutPath `$INSTDIR
+            File /r "${outDir}\*.*"
+            CreateShortcut "`$DESKTOP\MCP Console.lnk" "`$INSTDIR\`${APP_EXE}"
+            CreateDirectory "`$SMPROGRAMS\MCP Console"
+            CreateShortcut "`$SMPROGRAMS\MCP Console\MCP Console.lnk" "`$INSTDIR\`${APP_EXE}"
+            CreateShortcut "`$SMPROGRAMS\MCP Console\Uninstall.lnk" "`$INSTDIR\Uninstall.exe"
+            WriteUninstaller "`$INSTDIR\Uninstall.exe"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MCP Console" "DisplayName" "MCP Console"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MCP Console" "UninstallString" "`$INSTDIR\Uninstall.exe"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MCP Console" "DisplayVersion" "`${APP_VERSION}"
+            WriteRegStr HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MCP Console" "Publisher" "JiaDians"
+          SectionEnd
+
+          Section "Uninstall"
+            RMDir /r `$INSTDIR
+            Delete "`$DESKTOP\MCP Console.lnk"
+            RMDir /r "`$SMPROGRAMS\MCP Console"
+            DeleteRegKey HKCU "Software\Microsoft\Windows\CurrentVersion\Uninstall\MCP Console"
+          SectionEnd
+          "@ | Out-File -FilePath installer.nsi -Encoding UTF8
+          & "C:\Program Files (x86)\NSIS\makensis.exe" installer.nsi
+          echo "INSTALLER_NAME=$installerName" >> $env:GITHUB_ENV
+
+      - name: Package portable zip
         shell: pwsh
         run: |
           $version = "${{ github.ref_name }}"
           $outDir = "build\windows\x64\runner\Release"
-          $zipName = "MCP_Console_${version}_windows.zip"
+          $zipName = "MCP_Console_${version}_windows_portable.zip"
           Compress-Archive -Path "$outDir\*" -DestinationPath $zipName
           echo "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
 
@@ -44,17 +95,32 @@ jobs:
           body: |
             ## MCP Console ${{ github.ref_name }}
 
-            ### 下載安裝
-            1. 下載下方的 `MCP_Console_*_windows.zip`
-            2. 解壓縮到任意資料夾
-            3. 執行 `mcp_console.exe`
+            ### 📥 下載選項
 
-            ### 系統需求
+            | 檔案 | 說明 |
+            |------|------|
+            | `MCP_Console_*_Setup.exe` | **建議** — 安裝程式，會建立桌面捷徑與開始功能表 |
+            | `MCP_Console_*_windows_portable.zip` | 免安裝攜帶版，解壓縮後直接執行 |
+
+            ### ⚠️ Windows SmartScreen 警告說明
+
+            由於此應用程式尚未取得程式碼簽名憑證，Windows 可能顯示「Windows 已保護您的電腦」藍色警告畫面。
+
+            **這是開源軟體的常見情況，並非惡意程式。** 跳過方式：
+
+            1. 點擊「**更多資訊**」（More info）
+            2. 點擊「**仍要執行**」（Run anyway）
+
+            您可在 [GitHub 原始碼](https://github.com/${{ github.repository }}) 自行審閱所有程式碼。
+
+            ### 💻 系統需求
             - Windows 10 / 11 (x64)
             - 無需安裝其他執行環境
 
-            ### 變更內容
+            ### 📝 變更內容
             請見 [Commits](https://github.com/${{ github.repository }}/commits/${{ github.ref_name }})
-          files: ${{ env.ZIP_NAME }}
+          files: |
+            ${{ env.INSTALLER_NAME }}
+            ${{ env.ZIP_NAME }}
           draft: false
           prerelease: ${{ contains(github.ref_name, '-') }}

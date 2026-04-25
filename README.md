@@ -1,16 +1,27 @@
 # MCP Console
 
-[![CI](https://github.com/JiaDians/mcp_console/actions/workflows/ci.yml/badge.svg)](https://github.com/JiaDians/mcp_console/actions/workflows/ci.yml)
-[![Release](https://github.com/JiaDians/mcp_console/actions/workflows/release.yml/badge.svg)](https://github.com/JiaDians/mcp_console/releases)
+[![CI](https://github.com/JiaDians/MCP-Console/actions/workflows/ci.yml/badge.svg)](https://github.com/JiaDians/MCP-Console/actions/workflows/ci.yml)
+[![Release](https://github.com/JiaDians/MCP-Console/actions/workflows/release.yml/badge.svg)](https://github.com/JiaDians/MCP-Console/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 MCP Console 是一款 Windows 桌面應用程式，用於管理已安裝的 [MCP（Model Context Protocol）](https://modelcontextprotocol.io/) 伺服器。
 
 ## 下載
 
-前往 [Releases](https://github.com/JiaDians/mcp_console/releases) 下載最新版本的 `MCP_Console_*_windows.zip`，解壓縮後直接執行 `mcp_console.exe`，無需安裝。
+前往 [Releases](https://github.com/JiaDians/MCP-Console/releases) 下載最新版本：
+
+| 檔案 | 說明 |
+|------|------|
+| `MCP_Console_*_Setup.exe` | **建議** — 安裝程式，含桌面捷徑 |
+| `MCP_Console_*_windows_portable.zip` | 免安裝攜帶版 |
 
 > **系統需求**：Windows 10 / 11 (x64)
+
+### ⚠️ Windows SmartScreen 警告
+
+首次執行時 Windows 可能顯示「Windows 已保護您的電腦」藍色警告。這是因為應用程式尚未取得程式碼簽名憑證，屬於開源軟體的常見情況。
+
+**跳過方式**：點擊「**更多資訊**」→「**仍要執行**」即可。
 
 ## 預覽
 
