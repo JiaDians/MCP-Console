@@ -12,6 +12,10 @@ MCP Console 是一款 Windows 桌面應用程式，用於管理已安裝的 [MCP
 
 > **系統需求**：Windows 10 / 11 (x64)
 
+## 預覽
+
+![MCP Console 預覽](assets/screenshots/preview.png)
+
 ## 功能
 
 - **多用戶端支援**：自動讀取 Claude Desktop、Cursor、Windsurf、Cline、VS Code、Zed 等主流 AI 用戶端的設定檔
