@@ -1,6 +1,16 @@
 # MCP Console
 
+[![CI](https://github.com/JiaDians/mcp_console/actions/workflows/ci.yml/badge.svg)](https://github.com/JiaDians/mcp_console/actions/workflows/ci.yml)
+[![Release](https://github.com/JiaDians/mcp_console/actions/workflows/release.yml/badge.svg)](https://github.com/JiaDians/mcp_console/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 MCP Console 是一款 Windows 桌面應用程式，用於管理已安裝的 [MCP（Model Context Protocol）](https://modelcontextprotocol.io/) 伺服器。
+
+## 下載
+
+前往 [Releases](https://github.com/JiaDians/mcp_console/releases) 下載最新版本的 `MCP_Console_*_windows.zip`，解壓縮後直接執行 `mcp_console.exe`，無需安裝。
+
+> **系統需求**：Windows 10 / 11 (x64)
 
 ## 功能
 
